@@ -10,17 +10,30 @@ ten_days = timedelta( days=10 )
 one_day = timedelta( days=1 )
 
 
-def build_rates( amount=5 ):
+def build_class_rates( amount=5, empty=False ):
+    if empty:
+        factory = Class_rate_empty
+    else:
+        factory = Class_rate
     result = []
     kw = Chibi_atlas()
     for i in range( amount):
-        current = Rate.build( **kw )
+        current = factory.build( **kw )
         kw.low_class_aux = current.low_class
         result.append( current )
     return result
 
 
-class Rate( factory.Factory ):
+class Class_rate_empty( factory.Factory ):
+    low_class = ''
+    high_class = ''
+    as_class = ''
+
+    class Meta:
+        model = Chibi_atlas
+
+
+class Class_rate( Class_rate_empty ):
     low_class_aux = 0
     low_class = factory.lazy_attribute(
         lambda self: self.low_class_aux + fake.pyfloat(
@@ -34,18 +47,15 @@ class Rate( factory.Factory ):
     def remove_extra( obj, create, extracted, **kw ):
         obj.pop( 'low_class_aux' )
 
-    class Meta:
-        model = Chibi_atlas
 
-
-class LTL( factory.Factory ):
+class Base( factory.Factory ):
     record_id = factory.lazy_attribute(
         lambda x: fake.pyint( min_value=0, max_value=9999, step=1 ) )
     client_code = factory.lazy_attribute( lambda x: fake.company() )
     vendor_code = factory.lazy_attribute( lambda x: fake.license_plate() )
     rate_type = 'AP'
     external_rate_source = 'CZARLITE'
-    mode = 'LTL'
+    mode = 'BASE'
     equipment = ''
     route = ''
     fuel_program = 'DOE BASE 1.21'
@@ -117,13 +127,17 @@ class LTL( factory.Factory ):
     high_commodity_code = ''
     constraint = ''
 
-    rates = factory.List([
-        factory.SubFactory( Rate ) for i in range( random.randrange( 10 ) )
-    ])
-    rates = factory.lazy_attribute( lambda x: build_rates() )
+    rates = factory.lazy_attribute(
+        lambda x: build_class_rates( 1, empty=True ) )
 
     class Meta:
         model = Chibi_atlas
+
+
+class LTL( Base ):
+    mode = 'LTL'
+
+    rates = factory.lazy_attribute( lambda x: build_class_rates() )
 """
 RECORD ID
 CLIENT CODE
