@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
-
-"""Console script for excel_generator."""
 import argparse
+import logging
 import sys
 
 
-def main():
-    """Console script for excel_generator."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument('_', nargs='*')
-    args = parser.parse_args()
+logger_formarter = '%(levelname)s %(name)s %(asctime)s %(message)s'
 
-    print("Arguments: " + str(args._))
-    print("Replace this message by putting your code into "
-          "excel_generator.cli.main")
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="build random xlxs", fromfile_prefix_chars='@'
+    )
+    parser.add_argument(
+        '-w', '--white_rows', dest='white_rows', default=5, type=int )
+    parser.add_argument(
+        "--log_level", dest="log_level", default="INFO",
+        help="log level 🍡",
+    )
+    args = parser.parse_args()
+    logging.basicConfig( level=args.log_level, format=logger_formarter )
+
+    print( args.white_rows )
     return 0
 
 
