@@ -49,7 +49,7 @@ def main(argv):
 
     for i in range(int(white_rows) + 1):
         index = randint(0, len(df))
-        insert_row(index, df, pd.Series())
+        df = insert_row(index, df, pd.Series())
 
 
     df = df.sort_index().reset_index(drop=True)
