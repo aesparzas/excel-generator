@@ -78,7 +78,4 @@ class Record(factory.Factory):
 
 
 def generate_rows(num_rows):
-	rows = []
-	for row in range(num_rows):
-		rows.append(Record.build())
-	return rows
+	return Record.build_batch( size=num_rows )
