@@ -33,7 +33,7 @@ def get_options(argv):
         else:
             print(help_text)
             sys.exit()
-    return output_file, rows, white_rows
+    return output_file, int(rows), int(white_rows)
 
 
 def main(argv):
@@ -44,10 +44,10 @@ def main(argv):
     for object_dict in rows_list:
         aux_dict = {}
         for h in headers:
-            aux_dict.update({h, object_dict.get(snake_case(h), '')})
-        df.append(aux_dict)
+            aux_dict.update({h: object_dict.get(snake_case(h), '')})
+        df.append(aux_dict, ignore_index=True)
 
-    for i in range(int(white_rows) + 1):
+    for i in range(white_rows + 1):
         index = randint(0, len(df))
         df = insert_row(index, df, pd.Series())
 
