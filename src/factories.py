@@ -1,15 +1,20 @@
 import factory
 import random
-from faker import Faker
+from faker import Factory as faker_factory
 
 
-fake = Faker('es_MX')
+fake = faker_factory.create()
 MODE = ['TRUCK', 'LTL', 'VESSEL OCEAN', 'RAIL', 'PLANE']
 
 
+class LTL():
+	pass
+
+class Truck():
+	pass
 
 class Record(factory.Factory):
-	id = factory.LazyAttribute(lambda x: random.randint(1,10))
+	record_id = factory.LazyAttribute(lambda x: random.randint(1,10))
 	client_code =  factory.LazyAttribute(lambda x: fake.sentence(nb_words = 1))
 	vendor_type = ''
 	rate_type = ''
