@@ -5,6 +5,7 @@ from faker import Factory as faker_factory
 
 fake = faker_factory.create()
 MODE = ['TRUCK', 'LTL', 'VESSEL OCEAN', 'RAIL', 'PLANE']
+FREIGHT = ['I', 'O', 'B']
 
 
 class LTL():
@@ -14,37 +15,41 @@ class Truck():
 	pass
 
 class Record(factory.Factory):
-	record_id = factory.LazyAttribute(lambda x: random.randint(1,10))
-	client_code =  factory.LazyAttribute(lambda x: fake.sentence(nb_words = 1))
-	vendor_type = ''
-	rate_type = ''
-	external_rate_source = ''
-	mode = factory.LazyAttribute(lambda x: fake.sentence(ext_word_list = MODE, nb_words = 1))
-	equipment = ''
-	route = ''
-	fuel_program = ''
+	record_id = factory.LazyAttribute( lambda x: random.randint(1,10) )
+	client_code =  factory.LazyAttribute( lambda x: fake.sentence(nb_words = 1) )
+	vendor_type = factory.LazyAttribute( lambda x: fake.company() )
+	rate_type = 'AP'
+	external_rate_source = 'CZARLITE'
+	mode = factory.LazyAttribute( lambda x: fake.sentence(ext_word_list = MODE, nb_words = 1) )
+	equipment = factory.LazyAttribute( lambda x: fake.license_plate() )
+	route = 'CSXT BUFF CN'
+	fuel_program = 'DOE BASE 1.21'
 	round_trip = ''
 	incoterms = ''
-	freight_terms = ''
+	freight_terms = factory.LazyAttribute( lambda x: fake.sentence(ext_word_list = FREIGHT, nb_words = 1) )
 	notes = ''
-	geography_exclusion = ''
-	origin_location_code = ''
+	geography_exclusion = factory.lazy_attribute( lambda x: fake.pybool() )
+	origin_location_code = 'LAX|LGB|VAN'
 	origin_region = ''
-	origin_city = ''
+	origin_city = factory.lazy_attribute( lambda x: str(
+						fake.city()) + str(
+						fake.country_code(representation="alpha-2"))  )
 	origin_county = ''
 	origin_state = ''
 	origin_zip = ''
 	origin_zip_range = ''
-	origin_country = ''
+	origin_country = factory.LazyAttribute( lambda x: fake.country() )
 	destination_location_code = ''
 	destination_region = ''
 	destination_city = ''
-	destination_county = ''
+	destination_county = factory.LazyAttribute( lambda x: fake.country() )
 	destination_state = ''
 	destination_zip = ''
 	destination_zip_range = ''
 	destination_country = ''
-	efective_date = ''
+	efective_date = factory.lazy_attribute(
+							lambda x: fake.date_time_between(
+							start_date="now", end_date="+15d", tzinfo=None ) )
 	expiration_date = ''
 	load_id = ''
 	chargetype = ''
@@ -62,8 +67,8 @@ class Record(factory.Factory):
 	excess_rate = ''
 	discount_rate = ''
 	currency_code = ''
-	allow_deficit = ''
-	allow_higher_down = ''
+	allow_deficit = factory.lazy_attribute( lambda x: fake.pybool() )
+	allow_higher_down = factory.lazy_attribute( lambda x: fake.pybool() )
 	authority_publisher = ''
 	authority_release = ''
 	authority_section = ''
