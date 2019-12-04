@@ -46,7 +46,7 @@ def main(argv):
             aux_dict.update({h: object_dict.get(snake_case(h), '')})
         df = df.append(aux_dict, ignore_index=True).copy()
 
-    for i in range(white_rows + 1):
+    for i in range(white_rows):
         index = randint(0, len(df))
         df = insert_row(index, df, pd.Series())
 
