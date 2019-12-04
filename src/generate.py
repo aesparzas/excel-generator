@@ -45,7 +45,7 @@ def main(argv):
         aux_dict = {}
         for h in headers:
             aux_dict.update({h: object_dict.get(snake_case(h), '')})
-        df.append(aux_dict, ignore_index=True)
+        df = df.append(aux_dict, ignore_index=True).copy()
 
     for i in range(white_rows + 1):
         index = randint(0, len(df))
