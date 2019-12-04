@@ -3,7 +3,6 @@ import sys
 from random import randint
 
 import pandas as pd
-from pandas import concat
 
 from util import snake_case
 from vars import headers
@@ -53,7 +52,7 @@ def main(argv):
 
 
     df = df.sort_index().reset_index(drop=True)
-    df.to_excel(output_file)
+    df.to_excel(output_file, index=False)
     print('File written to', output_file)
 
 if __name__ == "__main__":
