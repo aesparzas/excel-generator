@@ -16,7 +16,7 @@ class Truck():
 	pass
 
 class Record(factory.Factory):
-	record_id = factory.LazyAttribute( lambda x: random.randint(1,10) )
+	record_id = factory.Sequence( lambda x: x )
 	client_code =  factory.LazyAttribute( lambda x: fake.sentence(nb_words = 1) )
 	vendor_type = factory.LazyAttribute( lambda x: fake.company() )
 	rate_type = 'AP'
