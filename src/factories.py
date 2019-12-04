@@ -88,7 +88,7 @@ class Record(factory.Factory):
 							positive=True, min_value=120, max_value=500) )
 	high_commodity_code = ''
 	low_class = factory.lazy_attribute(
-					lambda self: self.low_class_aux + fake.pyfloat(
+					lambda self: fake.pyfloat(
 					positive=True, min_value=50, max_value=150, right_digits=2 ) )
 	high_class = factory.lazy_attribute(
 					lambda self: self.low_class + fake.pyfloat(
