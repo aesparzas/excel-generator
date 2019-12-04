@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, random
 
 
 def snake_case(name):
@@ -22,3 +22,8 @@ def insert_row(row_number, df, row_value):
     df.loc[row_number] = row_value
     df = df.sort_index()
     return df
+
+
+def field_empty_on_probability(probability, field):
+    dice = random(0, 1)
+    return field if dice > probability else ''
