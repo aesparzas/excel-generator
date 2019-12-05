@@ -25,5 +25,5 @@ def insert_row(row_number, df, row_value):
 
 
 def field_empty_on_probability(probability, field):
-    dice = random(0, 1)
+    dice = random()
     return field if dice > probability else ''

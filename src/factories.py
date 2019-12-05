@@ -4,6 +4,9 @@ from faker import Factory as faker_factory
 from datetime import timedelta
 import logging
 
+from util import field_empty_on_probability
+
+PROB_EMPTY = 0.16
 fake = faker_factory.create()
 MODE = ['TRUCK', 'LTL', 'VESSEL OCEAN', 'RAIL', 'PLANE', 'MARINE']
 PROB = [5, 3, 3, 2, 1, 10]
@@ -18,6 +21,8 @@ def get_mode():
 
 
 class Record(factory.Factory):
+
+    mandatory_attrs = ['record_id', 'efective_date']
 
     record_id = factory.Sequence(lambda x: x + 1)
     client_code = factory.LazyAttribute(
@@ -130,6 +135,10 @@ def generate_rows(num_rows):
     for i in range(num_rows):
         factory = random.choice( factories )
         logger.info( factory.__name__ )
-        yield factory.build()
+        record = factory.build()
+        for k, v in record.items():
+            if k not in Record.mandatory_attrs:
+                record[k] = field_empty_on_probability(PROB_EMPTY, v)
+        yield record
 
-        
+
