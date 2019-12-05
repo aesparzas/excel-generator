@@ -3,6 +3,9 @@ import random
 from faker import Factory as faker_factory
 from datetime import timedelta
 
+from util import field_empty_on_probability
+
+PROB_EMPTY = 0.16
 fake = faker_factory.create()
 MODE = ['TRUCK', 'LTL', 'VESSEL OCEAN', 'RAIL', 'PLANE']
 FREIGHT = ['I', 'O', 'B']
@@ -19,6 +22,8 @@ class Truck():
 
 
 class Record(factory.Factory):
+    mandatory_attrs = ['record_id', 'efective_date']
+
     record_id = factory.Sequence(lambda x: x + 1)
     client_code = factory.LazyAttribute(
         lambda x: fake.sentence(nb_words=1)[:-1])
@@ -113,4 +118,8 @@ class Record(factory.Factory):
 
 def generate_rows(num_rows):
     for i in range(num_rows):
-        yield Record.build()
+        record = Record.build()
+        for k, v in record.items():
+            if k not in Record.mandatory_attrs:
+                record[k] = field_empty_on_probability(PROB_EMPTY, v)
+        yield record
