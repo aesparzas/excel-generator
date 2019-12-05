@@ -113,4 +113,4 @@ class Record(factory.Factory):
 
 def generate_rows(num_rows):
     for i in range(num_rows):
-        yield Record()
+        yield Record.build()
