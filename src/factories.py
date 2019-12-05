@@ -16,18 +16,18 @@ class Truck():
 	pass
 
 class Record(factory.Factory):
-	record_id = factory.Sequence( lambda x: x )
+	record_id = factory.Sequence( lambda x: x + 1 )
 	client_code =  factory.LazyAttribute( lambda x: fake.sentence(nb_words = 1) )
 	vendor_type = factory.LazyAttribute( lambda x: fake.company() )
 	rate_type = 'AP'
 	external_rate_source = 'CZARLITE'
-	mode = factory.LazyAttribute( lambda x: fake.sentence(ext_word_list = MODE, nb_words = 1) )
+	mode = factory.LazyAttribute( lambda x: random.choices( MODE ) )
 	equipment = factory.LazyAttribute( lambda x: fake.license_plate() )
 	route = 'CSXT BUFF CN'
 	fuel_program = 'DOE BASE 1.21'
 	round_trip = ''
 	incoterms = ''
-	freight_terms = factory.LazyAttribute( lambda x: fake.sentence(ext_word_list = FREIGHT, nb_words = 1) )
+	freight_terms = factory.LazyAttribute( lambda x: random.choice( 'IOB' ) )
 	notes = ''
 	geography_exclusion = factory.lazy_attribute( lambda x: fake.pybool() )
 	origin_location_code = 'LAX|LGB|VAN'
