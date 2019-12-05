@@ -2,26 +2,26 @@ import factory
 import random
 from faker import Factory as faker_factory
 from datetime import timedelta
+import logging
 
 from util import field_empty_on_probability
 
 PROB_EMPTY = 0.16
 fake = faker_factory.create()
-MODE = ['TRUCK', 'LTL', 'VESSEL OCEAN', 'RAIL', 'PLANE']
+MODE = ['TRUCK', 'LTL', 'VESSEL OCEAN', 'RAIL', 'PLANE', 'MARINE']
+PROB = [5, 3, 3, 2, 1, 10]
 FREIGHT = ['I', 'O', 'B']
 ten_days = timedelta(days=10)
 one_day = timedelta(days=1)
 
+logger = logging.getLogger( "excel-generator.factories" )
 
-class LTL():
-    pass
-
-
-class Truck():
+def get_mode():
     pass
 
 
 class Record(factory.Factory):
+
     mandatory_attrs = ['record_id', 'efective_date']
 
     record_id = factory.Sequence(lambda x: x + 1)
@@ -30,15 +30,14 @@ class Record(factory.Factory):
     vendor_type = factory.LazyAttribute(lambda x: fake.company())
     rate_type = 'AP'
     external_rate_source = 'CZARLITE'
-    mode = factory.LazyAttribute(
-        lambda x: fake.sentence(ext_word_list=MODE, nb_words=1)[:-1])
+    mode = factory.LazyAttribute( lambda x: str(random.choices( MODE,
+        weights = PROB, k = 1 )) )
     equipment = factory.LazyAttribute(lambda x: fake.license_plate())
     route = 'CSXT BUFF CN'
     fuel_program = 'DOE BASE 1.21'
     round_trip = ''
     incoterms = ''
-    freight_terms = factory.LazyAttribute(
-        lambda x: fake.sentence(ext_word_list=FREIGHT, nb_words=1)[:-1])
+    freight_terms = factory.LazyAttribute( lambda x: random.choice( 'IOB' ) )
     notes = ''
     geography_exclusion = factory.lazy_attribute(lambda x: fake.pybool())
     origin_location_code = 'LAX|LGB|VAN'
@@ -53,8 +52,8 @@ class Record(factory.Factory):
     origin_country = factory.LazyAttribute(lambda x: fake.country())
     destination_location_code = 'PVG|SHA'
     destination_region = ''
-    destination_city = factory.lazy_attribute(lambda x: str(fake.city()) + str(
-        fake.country_code(representation="alpha-2")))
+    destination_city = factory.lazy_attribute(lambda x: str(fake.city()) +
+        str(fake.country_code(representation="alpha-2")))
     destination_county = ''
     destination_state = factory.LazyAttribute(
         lambda x: fake.state_abbr(include_territories=True))
@@ -72,17 +71,17 @@ class Record(factory.Factory):
     load_id = ''
     chargetype = 'LT'
     uom = 'ML'
-    instance = ''
-    auto_apply = ''
-    apply_at_level = ''
+    instance = '-'
+    auto_apply = factory.lazy_attribute(lambda x: fake.pybool())
+    apply_at_level = '1'
     band_uom_min = '0'
     band_uom_max = '10'
     flat_charge = '10.0'
     rate = '2.65'
-    minimum_charge = ''
-    maximum_charge = ''
-    base_charge = ''
-    excess_rate = ''
+    minimum_charge = '0'
+    maximum_charge = '10'
+    base_charge = '10'
+    excess_rate = '1'
     discount_rate = '78.70'
     currency_code = 'USD'
     allow_deficit = factory.lazy_attribute(lambda x: fake.pybool())
@@ -116,10 +115,30 @@ class Record(factory.Factory):
         model = dict
 
 
+class Marine(Record):
+    mode = 'marine'
+    client_code = ['KBXMOLEX','KBXMOLEX','KBXMOLEX','KBXMOLEX','KBXMOLEX']
+
+
+class Rail(Record):
+    pass
+
+
+class Spot_Quote(Record):
+    pass
+
+
+
+
 def generate_rows(num_rows):
+    factories = [ Marine, Record ]
     for i in range(num_rows):
-        record = Record.build()
+        factory = random.choice( factories )
+        logger.info( factory.__name__ )
+        record = factory.build()
         for k, v in record.items():
             if k not in Record.mandatory_attrs:
                 record[k] = field_empty_on_probability(PROB_EMPTY, v)
         yield record
+
+
