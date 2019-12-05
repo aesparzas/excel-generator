@@ -3,7 +3,6 @@ import sys
 from random import randint
 
 import pandas as pd
-from pandas import concat
 
 from util import snake_case
 from vars import headers
@@ -16,10 +15,16 @@ def get_options(argv):
     rows = 0
     white_rows = 0
     output_file = 'output.xlsx'
-    help_text = 'python generate.py -r <number of rows> -w <number of white rows> -o <output path>'
+
+    help_text = (
+        'python generate.py -r <number of rows> -w <number of '
+        'white rows> -o <output path>'
+    )
 
     try:
-        opts, args = getopt.getopt(argv, "hr:w:", ["rows=", "white-rows=", "output-file="])
+        opts, args = getopt.getopt(argv, "hr:w:", ["rows=",
+                                                   "white-rows=",
+                                                   "output-file="])
     except getopt.GetoptError:
         print(help_text)
         sys.exit(2)
@@ -45,15 +50,15 @@ def main(argv):
         aux_dict = {}
         for h in headers:
             aux_dict.update({h: object_dict.get(snake_case(h), '')})
-        df.append(aux_dict, ignore_index=True)
+        df = df.append(aux_dict, ignore_index=True).copy()
 
-    for i in range(white_rows + 1):
+    for i in range(white_rows):
         index = randint(0, len(df))
         df = insert_row(index, df, pd.Series())
 
 
     df = df.sort_index().reset_index(drop=True)
-    df.to_excel(output_file)
+    df.to_excel(output_file, index=False)
     print('File written to', output_file)
 
 if __name__ == "__main__":
