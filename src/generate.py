@@ -15,10 +15,16 @@ def get_options(argv):
     rows = 0
     white_rows = 0
     output_file = 'output.xlsx'
-    help_text = 'python generate.py -r <number of rows> -w <number of white rows> -o <output path>'
+
+    help_text = (
+        'python generate.py -r <number of rows> -w <number of '
+        'white rows> -o <output path>'
+    )
 
     try:
-        opts, args = getopt.getopt(argv, "hr:w:", ["rows=", "white-rows=", "output-file="])
+        opts, args = getopt.getopt(argv, "hr:w:", ["rows=",
+                                                   "white-rows=",
+                                                   "output-file="])
     except getopt.GetoptError:
         print(help_text)
         sys.exit(2)
